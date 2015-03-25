@@ -17,6 +17,10 @@ module VoximplantApi
       @api_key = options[:api_key]
     end
 
+    def get_info
+      perform_request("GetAccountInfo")["result"]
+    end
+
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
     end
