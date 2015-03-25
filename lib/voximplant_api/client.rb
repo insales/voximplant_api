@@ -21,6 +21,19 @@ module VoximplantApi
       perform_request("GetAccountInfo")["result"]
     end
 
+    def get_phone_number_categories(options)
+      perform_request("GetPhoneNumberCategories", options)
+    end
+
+    #options: country_code, phone_category_name
+    def get_phone_number_regions(options)
+      perform_request("GetPhoneNumberRegions", options)
+    end
+
+    def get_new_phone_numbers(options)
+      perform_request("GetNewPhoneNumbers", options)
+    end
+
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
     end
@@ -62,4 +75,13 @@ module VoximplantApi
     end
 
   end
+
+  def country_codes
+    COUNTRY_CODES
+  end
+
+  protected
+
+  COUNTRY_CODES = [:ru]
+
 end
