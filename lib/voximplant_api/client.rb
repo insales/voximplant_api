@@ -1,6 +1,15 @@
 require 'rest_client'
 
 module VoximplantApi
+  class Error < StandardError
+    attr_reader :code
+
+    def initialize(error)
+      super error["msg"]
+      @code = error["code"]
+    end
+  end
+
   class Client
 
     def initialize(options)
@@ -40,7 +49,11 @@ module VoximplantApi
       end
 
       def perform_request(name, params)
-        JSON.parse (RestClient.get "#{self.api_basic_url}/#{name}", params: params)
+        result = JSON.parse (RestClient.get "#{self.api_basic_url}/#{name}", params: params)
+        if result["error"]
+          raise Error.new(result["error"])
+        end
+        result
       end
     end
 
