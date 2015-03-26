@@ -1,3 +1,2 @@
 require_relative 'voximplant_api/client'
-
-include VoximplantApi
+require_relative 'voximplant_api/country_codes'

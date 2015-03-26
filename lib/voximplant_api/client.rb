@@ -76,12 +76,4 @@ module VoximplantApi
 
   end
 
-  def country_codes
-    COUNTRY_CODES
-  end
-
-  protected
-
-  COUNTRY_CODES = [:ru]
-
 end
