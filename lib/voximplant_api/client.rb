@@ -22,16 +22,16 @@ module VoximplantApi
     end
 
     def get_phone_number_categories(options)
-      perform_request("GetPhoneNumberCategories", options)
+      perform_request("GetPhoneNumberCategories", options)["result"][0]["phone_categories"]
     end
 
     #options: country_code, phone_category_name
     def get_phone_number_regions(options)
-      perform_request("GetPhoneNumberRegions", options)
+      perform_request("GetPhoneNumberRegions", options)["result"]
     end
 
     def get_new_phone_numbers(options)
-      perform_request("GetNewPhoneNumbers", options)
+      perform_request("GetNewPhoneNumbers", options)["result"]
     end
 
     def create_child_account(options)
