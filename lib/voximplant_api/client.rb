@@ -34,6 +34,10 @@ module VoximplantApi
       perform_request("GetNewPhoneNumbers", options)["result"]
     end
 
+    def attach_phone_number(options)
+      perform_request("AttachPhoneNumber", options)["phone_numbers"]
+    end
+
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
     end
