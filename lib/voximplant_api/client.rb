@@ -42,6 +42,18 @@ module VoximplantApi
       perform_request("AttachPhoneNumber", options)["phone_numbers"]
     end
 
+    def add_application(options)
+      perform_request("AddApplication", options)
+    end
+
+    def add_scenario(options)
+      perform_request("AddScenario", options)
+    end
+
+    def add_rule(options)
+      perform_request("AddRule", options)
+    end
+
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
     end
@@ -74,7 +86,7 @@ module VoximplantApi
       end
 
       def perform_request(name, params)
-        result = JSON.parse (RestClient.get "#{self.api_basic_url}/#{name}", params: params)
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params)
         if result["error"]
           raise Error.new(result["error"])
         end
