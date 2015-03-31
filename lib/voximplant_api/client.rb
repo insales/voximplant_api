@@ -66,6 +66,10 @@ module VoximplantApi
       perform_request_as_parent("AddAccount", options)
     end
 
+    def transfer_money_to_child_account(options)
+      perform_request_as_parent("TransferMoneyToChildAccount", options)
+    end
+
     protected
 
     def auth_params
