@@ -50,6 +50,10 @@ module VoximplantApi
       perform_request("AddScenario", options)
     end
 
+    def set_scenario_info(options)
+      perform_request("SetScenarioInfo", options)
+    end
+
     def add_rule(options)
       perform_request("AddRule", options)
     end
