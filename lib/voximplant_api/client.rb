@@ -35,7 +35,7 @@ module VoximplantApi
     end
 
     def get_phone_numbers(options)
-      perform_request("GetPhoneNumbers", options)
+      perform_request("GetPhoneNumbers", options)["result"]
     end
 
     def attach_phone_number(options)
