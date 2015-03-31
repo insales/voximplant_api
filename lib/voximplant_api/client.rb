@@ -58,6 +58,10 @@ module VoximplantApi
       perform_request("AddRule", options)
     end
 
+    def bind_phone_number_to_application(options)
+      perform_request("BindPhoneNumberToApplication", options)
+    end
+
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
     end
