@@ -67,7 +67,7 @@ module VoximplantApi
     end
 
     def transfer_money_to_child_account(options)
-      perform_request_as_parent("TransferMoneyToChildAccount", options)
+      perform_request("TransferMoneyToChildAccount", options)
     end
 
     protected
