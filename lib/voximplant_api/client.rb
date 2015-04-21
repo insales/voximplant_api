@@ -46,6 +46,10 @@ module VoximplantApi
       perform_request("AddApplication", options)
     end
 
+    def get_scenarios(options)
+      perform_request("GetScenarios", options)
+    end
+
     def add_scenario(options)
       perform_request("AddScenario", options)
     end
