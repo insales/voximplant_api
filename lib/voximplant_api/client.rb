@@ -70,7 +70,7 @@ module VoximplantApi
       perform_request("SetRuleInfo", options)
     end
 
-    def del_rule_info(options)
+    def del_rule(options)
       perform_request("DelRule", options)
     end
 
