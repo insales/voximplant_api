@@ -58,8 +58,16 @@ module VoximplantApi
       perform_request("SetScenarioInfo", options)
     end
 
+    def get_rules(options)
+      perform_request("GetRules", options)["result"]
+    end
+
     def add_rule(options)
       perform_request("AddRule", options)
+    end
+
+    def set_rule_info(options)
+      perform_request("SetRuleInfo", options)
     end
 
     def bind_phone_number_to_application(options)
