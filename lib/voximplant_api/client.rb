@@ -70,6 +70,10 @@ module VoximplantApi
       perform_request("SetRuleInfo", options)
     end
 
+    def del_rule_info(options)
+      perform_request("DelRule", options)
+    end
+
     def bind_phone_number_to_application(options)
       perform_request("BindPhoneNumberToApplication", options)
     end
