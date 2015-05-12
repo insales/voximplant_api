@@ -38,6 +38,10 @@ module VoximplantApi
       perform_request("GetPhoneNumbers", options)["result"]
     end
 
+    def set_phone_number_info(options)
+      perform_request("SetPhoneNumberInfo", options)
+    end
+
     def attach_phone_number(options)
       perform_request("AttachPhoneNumber", options)["phone_numbers"]
     end
