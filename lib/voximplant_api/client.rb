@@ -90,6 +90,10 @@ module VoximplantApi
       perform_request("TransferMoneyToChildAccount", options)
     end
 
+    def get_money_amount_to_charge(options)
+      perform_request("GetMoneyAmountToCharge", options)["result"]
+    end
+
     protected
 
     def auth_params
