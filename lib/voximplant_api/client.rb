@@ -94,6 +94,14 @@ module VoximplantApi
       perform_request("GetMoneyAmountToCharge", options)["result"]
     end
 
+    def get_account_documents(options)
+      perform_request("GetAccountDocuments", options)["result"]
+    end
+
+    def set_account_documents(options)
+      perform_request("SetAccountDocument", options)["result"]
+    end
+
     protected
 
     def auth_params
