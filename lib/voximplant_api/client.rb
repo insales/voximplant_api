@@ -102,6 +102,10 @@ module VoximplantApi
       perform_request("SetAccountDocument", options)["result"]
     end
 
+    def get_call_history(options)
+      perform_request('GetCallHistory', options)["result"]
+    end
+
     protected
 
     def auth_params
