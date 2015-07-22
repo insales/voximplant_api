@@ -103,7 +103,7 @@ module VoximplantApi
     end
 
     def get_call_history(options)
-      perform_request('GetCallHistory', options)["result"]
+      perform_request('GetCallHistory', options)
     end
 
     protected
