@@ -1,6 +1,7 @@
 # VoximplantApi
 
-TODO: Write a gem description
+Voximplant HTTP API wraper
+http://voximplant.com/docs/references/httpapi/
 
 ## Installation
 
@@ -20,7 +21,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+client = VoximplantApi::Client.new account_id: 123, api_key: 'apikey-trololo'
+client.get_account_info
+```
 
 ## Contributing
 
