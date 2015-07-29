@@ -24,6 +24,19 @@ Or install it yourself as:
 ```ruby
 client = VoximplantApi::Client.new account_id: 123, api_key: 'apikey-trololo'
 client.get_account_info # request command "GetAccountInfo"
+
+client.get_phone_number_categories(country_code: 'ru')
+=> {"result"=>
+  [{"country_code"=>"RU",
+    "can_list_phone_numbers"=>true,
+    "phone_categories"=>
+     [{"phone_installation_price"=>0.0, "phone_period"=>"0-1-0 0:0:0", "phone_category_name"=>"GEOGRAPHIC", "country_has_states"=>false, "phone_price"=>300.0},
+      {"phone_installation_price"=>0.0, "phone_period"=>"0-1-0 0:0:0", "phone_category_name"=>"MOBILE", "country_has_states"=>false, "phone_price"=>300.0},
+      {"phone_installation_price"=>0.0, "phone_period"=>"0-1-0 0:0:0", "phone_category_name"=>"MOSCOW495", "country_has_states"=>false, "phone_price"=>500.0},
+      {"phone_installation_price"=>3000.0, "phone_period"=>"0-1-0 0:0:0", "phone_category_name"=>"TOLLFREE", "country_has_states"=>false, "phone_price"=>1500.0}],
+    "phone_prefix"=>"7"}],
+ "count"=>1}
+
 ```
 
 ## Errors
