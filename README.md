@@ -23,7 +23,23 @@ Or install it yourself as:
 
 ```ruby
 client = VoximplantApi::Client.new account_id: 123, api_key: 'apikey-trololo'
-client.get_account_info
+client.get_account_info # request command "GetAccountInfo"
+```
+
+## Errors
+
+```ruby
+begin
+  client.get_account_info
+rescue VoximplantApi::Error => e
+  puts e
+end
+
+begin
+  client.not_existing_method
+rescue NoMethodError => e
+  puts e
+end
 ```
 
 ## Contributing
