@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = "VoxImplant.com HTTP API client"
   s.authors = ["Vladimir Shushlin"]
   s.email = 'v.shushlin@insales.ru'
-  s.files = ["lib/voximplant_api.rb", "lib/voximplant_api/client.rb", "lib/voximplant_api/country_codes.rb"]
+  s.files = ["lib/voximplant_api.rb", "lib/voximplant_api/client.rb"]
   s.homepage = "https://github.com/insales/voximplant_api"
 
   s.add_runtime_dependency "rest-client"
