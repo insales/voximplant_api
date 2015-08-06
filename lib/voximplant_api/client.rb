@@ -24,9 +24,18 @@ module VoximplantApi
     end
 
     def method_missing(name, *args)
-      method_name = name.to_s.split('_').collect(&:capitalize).join
       options = args.first || {}
-      perform_request method_name, options
+      name_words = name.to_s.split('_')
+      if name_words.first == "each"
+        return enum_for(name, *args) unless block_given?
+        method_name = name_words[1..-1].collect(&:capitalize).join
+        perform_request_each method_name, options do |x|
+          yield x
+        end
+      else
+        method_name = name_words.collect(&:capitalize).join
+        perform_request method_name, options
+      end
 
     rescue VoximplantApi::Error => e
       if e.code == NO_METHOD_ERROR_CODE
@@ -51,6 +60,20 @@ module VoximplantApi
     def perform_request(name, params = {})
       params = auth_params.merge params
       self.class.perform_request(name, params)
+    end
+
+    def perform_request_each(name, params = {})
+      offset = params[:offset] || 0
+      per_page = [params[:count] || 100, 100].min
+      begin
+        result = perform_request(name, params.merge(offset: offset, count: per_page))
+        count = result["count"]
+        offset += count
+        total_count = result["total_count"]
+        result["result"].each do |obj|
+          yield obj
+        end
+      end while offset < total_count
     end
 
     def perform_request_as_parent(name, params = {})
