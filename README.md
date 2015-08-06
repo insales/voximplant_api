@@ -39,6 +39,12 @@ client.get_phone_number_categories(country_code: 'ru')
 
 ```
 
+## Pagination and each
+Just add 'each_' prefix to method
+```ruby
+client.each_get_transaction_history(from_date: Time.now - 1592000).to_a
+```
+
 ## Errors
 
 ```ruby
