@@ -2,7 +2,7 @@ require 'rest_client'
 
 module VoximplantApi
   NO_METHOD_ERROR_CODE = 103
-  
+
   class Error < StandardError
     attr_reader :code
 
@@ -21,6 +21,10 @@ module VoximplantApi
 
     def create_child_account(options)
       perform_request_as_parent("AddAccount", options)
+    end
+
+    def generate_contractor_invoice(options)
+      RestClient.post("#{self.class.api_basic_url}/GenerateContractorInvoice", auth_params.merge(options))
     end
 
     def method_missing(name, *args)
