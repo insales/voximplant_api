@@ -13,10 +13,12 @@ module VoximplantApi
   end
 
   class Client
+    attr_reader :token
 
     def initialize(options)
       @account_id = options[:account_id]
       @api_key = options[:api_key]
+      @token = options[:token]
     end
 
     def create_child_account(options)
@@ -63,7 +65,11 @@ module VoximplantApi
 
     def perform_request(name, params = {})
       params = auth_params.merge params
-      self.class.perform_request(name, params)
+      self.class.perform_request(name, params, auth_headers)
+    end
+
+    def auth_headers
+      token ? { 'Authorization' => "Bearer #{token}" } : {}
     end
 
     def perform_request_each(name, params = {})
@@ -80,9 +86,9 @@ module VoximplantApi
       end while offset < total_count
     end
 
-    def perform_request_as_parent(name, params = {})
+    def perform_request_as_parent(name, params = {}, headers = {})
       params = parent_auth_params.merge params
-      self.class.perform_request(name, params)
+      self.class.perform_request(name, params, auth_headers)
     end
 
     class << self
@@ -90,8 +96,8 @@ module VoximplantApi
         "https://api.voximplant.com/platform_api"
       end
 
-      def perform_request(name, params)
-        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params)
+      def perform_request(name, params, headers = {})
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params, headers: headers)
         if result["error"]
           raise Error.new(result["error"])
         end
