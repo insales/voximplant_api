@@ -27,7 +27,7 @@ module VoximplantApi
     end
 
     def generate_contractor_invoice(options)
-      RestClient.post("#{self.class.api_basic_url}/GenerateContractorInvoice", auth_params.merge(options))
+      RestClient.post("#{self.class.api_basic_url}/GenerateContractorInvoice", auth_params.merge(options), auth_headers)
     end
 
     def method_missing(name, *args)
@@ -74,14 +74,12 @@ module VoximplantApi
     end
 
     def perform_request(name, params = {})
-      if private_key
-        self.class.perform_api_request(name, params.merge(account_id: @account_id), auth_headers)
-      else
-        self.class.perform_request(name, auth_params.merge(params))
-      end
+      self.class.perform_request(name, auth_params.merge(params), auth_headers)
     end
 
     def auth_headers
+      return {} unless private_key
+
       { Authorization: "Bearer #{build_token}" }
     end
 
@@ -100,11 +98,7 @@ module VoximplantApi
     end
 
     def perform_request_as_parent(name, params = {})
-      if private_key
-        self.class.perform_api_request(name, params.merge(account_id: @account_id), auth_headers)
-      else
-        self.class.perform_request(name, parent_auth_params.merge(params))
-      end
+      self.class.perform_request(name, parent_auth_params.merge(params), auth_headers)
     end
 
     class << self
@@ -112,24 +106,13 @@ module VoximplantApi
         "https://api.voximplant.com/platform_api"
       end
 
-      def perform_api_request(name, params, headers = {})
-        params = params.merge(cmd: name)
-        result = JSON.parse (RestClient.post "#{self.api_basic_url}", params, headers)
-        if result["error"]
-          raise Error.new(result["error"])
-        end
-        result
-      end
-
-      def perform_request(name, params)
-        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params)
+      def perform_request(name, params, headers = {})
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params, headers)
         if result["error"]
           raise Error.new(result["error"])
         end
         result
       end
     end
-
   end
-
 end
