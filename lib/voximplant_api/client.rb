@@ -13,12 +13,13 @@ module VoximplantApi
   end
 
   class Client
-    attr_reader :token
+    attr_reader :private_key, :private_key_id, :account_id
 
     def initialize(options)
       @account_id = options[:account_id]
       @api_key = options[:api_key]
-      @token = options[:token]
+      @private_key = options[:private_key]
+      @private_key_id = options[:private_key_id]
     end
 
     def create_child_account(options)
@@ -53,6 +54,15 @@ module VoximplantApi
 
     protected
 
+    def build_token
+      ts = Time.now.to_i
+      payload = { iss: account_id, iat: ts - 5, exp: ts + 64 }
+      JWT.encode(payload,
+        OpenSSL::PKey::RSA.new(private_key),
+        'RS256',
+        kid: private_key_id, typ: 'JWT')
+    end
+
     def auth_params
       {account_id: @account_id,
        api_key: @api_key}
@@ -64,12 +74,15 @@ module VoximplantApi
     end
 
     def perform_request(name, params = {})
-      params = token ? params : auth_params.merge(params)
-      self.class.perform_request(name, params, auth_headers)
+      if private_key
+        self.class.perform_api_request(name, params.merge(account_id: @account_id), auth_headers)
+      else
+        self.class.perform_request(name, auth_params.merge(params))
+      end
     end
 
     def auth_headers
-      token ? { 'Authorization' => "Bearer #{token}" } : {}
+      { Authorization: "Bearer #{build_token}" }
     end
 
     def perform_request_each(name, params = {})
@@ -86,9 +99,12 @@ module VoximplantApi
       end while offset < total_count
     end
 
-    def perform_request_as_parent(name, params = {}, headers = {})
-      params = token ? params : parent_auth_params.merge(params)
-      self.class.perform_request(name, params, auth_headers)
+    def perform_request_as_parent(name, params = {})
+      if private_key
+        self.class.perform_api_request(name, params.merge(account_id: @account_id), auth_headers)
+      else
+        self.class.perform_request(name, parent_auth_params.merge(params))
+      end
     end
 
     class << self
@@ -96,8 +112,17 @@ module VoximplantApi
         "https://api.voximplant.com/platform_api"
       end
 
-      def perform_request(name, params, headers = {})
-        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params, headers: headers)
+      def perform_api_request(name, params, headers = {})
+        params = params.merge(cmd: name)
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}", params, headers)
+        if result["error"]
+          raise Error.new(result["error"])
+        end
+        result
+      end
+
+      def perform_request(name, params)
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params)
         if result["error"]
           raise Error.new(result["error"])
         end
