@@ -64,7 +64,7 @@ module VoximplantApi
     end
 
     def perform_request(name, params = {})
-      params = auth_params.merge params
+      params = token ? params : auth_params.merge(params)
       self.class.perform_request(name, params, auth_headers)
     end
 
@@ -87,7 +87,7 @@ module VoximplantApi
     end
 
     def perform_request_as_parent(name, params = {}, headers = {})
-      params = parent_auth_params.merge params
+      params = token ? params : parent_auth_params.merge(params)
       self.class.perform_request(name, params, auth_headers)
     end
 
