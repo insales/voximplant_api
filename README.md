@@ -39,6 +39,14 @@ client.get_phone_number_categories(country_code: 'ru')
 
 ```
 
+Or you can use modern api authentication mechanism:
+
+```ruby
+client = VoximplantApi::Client.new(account_id: 123, private_key: 'private key credentials goes here', private_key_id: 'private-key-uuid')
+client.get_account_info
+
+```
+
 ## Pagination and each
 Just add 'each_' prefix to method
 ```ruby
