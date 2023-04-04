@@ -47,6 +47,17 @@ client.get_account_info
 
 ```
 
+You can download scenario execution log file or phone call record via:
+
+```
+client.execute(
+  method: :post,
+  url: "https://storage.voximplant.com/voximplant-records-secure/2023/04/03/...",
+  raw_response: true
+)
+
+```
+
 ## Pagination and each
 Just add 'each_' prefix to method
 ```ruby
