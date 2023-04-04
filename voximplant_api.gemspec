@@ -13,4 +13,5 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/insales/voximplant_api"
 
   s.add_runtime_dependency "rest-client"
+  s.add_runtime_dependency "jwt"
 end

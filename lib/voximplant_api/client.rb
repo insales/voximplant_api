@@ -20,6 +20,7 @@ module VoximplantApi
       @api_key = options[:api_key]
       @private_key = options[:private_key]
       @private_key_id = options[:private_key_id]
+      validate_auth_params!
     end
 
     def create_child_account(options)
@@ -52,7 +53,25 @@ module VoximplantApi
       end
     end
 
+    def execute(args = {})
+      self.class.execute(
+        **args,
+        payload: auth_params.merge(args[:payload] || {}),
+        headers: auth_headers.merge(args[:headers] || {})
+      )
+    end
+
     protected
+
+    def validate_auth_params!
+      raise Error.new("Account id is missing!") unless @account_id
+
+      return if @api_key
+
+      unless private_key && private_key_id
+        raise Error.new("Authentication key is missing! See https://voximplant.com/docs/guides/managementapi/authorization")
+      end
+    end
 
     def build_token
       ts = Time.now.to_i
@@ -112,6 +131,10 @@ module VoximplantApi
           raise Error.new(result["error"])
         end
         result
+      end
+
+      def execute(args = {})
+        RestClient::Request.execute(args)
       end
     end
   end
