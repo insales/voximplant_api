@@ -13,10 +13,14 @@ module VoximplantApi
   end
 
   class Client
+    attr_reader :private_key, :private_key_id, :account_id
 
     def initialize(options)
       @account_id = options[:account_id]
       @api_key = options[:api_key]
+      @private_key = options[:private_key]
+      @private_key_id = options[:private_key_id]
+      validate_auth_params!
     end
 
     def create_child_account(options)
@@ -24,7 +28,7 @@ module VoximplantApi
     end
 
     def generate_contractor_invoice(options)
-      RestClient.post("#{self.class.api_basic_url}/GenerateContractorInvoice", auth_params.merge(options))
+      RestClient.post("#{self.class.api_basic_url}/GenerateContractorInvoice", auth_params.merge(options), auth_headers)
     end
 
     def method_missing(name, *args)
@@ -49,7 +53,34 @@ module VoximplantApi
       end
     end
 
+    def execute(args = {})
+      self.class.execute(
+        **args,
+        payload: auth_params.merge(args[:payload] || {}),
+        headers: auth_headers.merge(args[:headers] || {})
+      )
+    end
+
     protected
+
+    def validate_auth_params!
+      raise Error.new("Account id is missing!") unless @account_id
+
+      return if @api_key
+
+      unless private_key && private_key_id
+        raise Error.new("Authentication key is missing! See https://voximplant.com/docs/guides/managementapi/authorization")
+      end
+    end
+
+    def build_token
+      ts = Time.now.to_i
+      payload = { iss: account_id, iat: ts - 5, exp: ts + 64 }
+      JWT.encode(payload,
+        OpenSSL::PKey::RSA.new(private_key),
+        'RS256',
+        kid: private_key_id, typ: 'JWT')
+    end
 
     def auth_params
       {account_id: @account_id,
@@ -62,8 +93,13 @@ module VoximplantApi
     end
 
     def perform_request(name, params = {})
-      params = auth_params.merge params
-      self.class.perform_request(name, params)
+      self.class.perform_request(name, auth_params.merge(params), auth_headers)
+    end
+
+    def auth_headers
+      return {} unless private_key
+
+      { Authorization: "Bearer #{build_token}" }
     end
 
     def perform_request_each(name, params = {})
@@ -81,8 +117,7 @@ module VoximplantApi
     end
 
     def perform_request_as_parent(name, params = {})
-      params = parent_auth_params.merge params
-      self.class.perform_request(name, params)
+      self.class.perform_request(name, parent_auth_params.merge(params), auth_headers)
     end
 
     class << self
@@ -90,15 +125,17 @@ module VoximplantApi
         "https://api.voximplant.com/platform_api"
       end
 
-      def perform_request(name, params)
-        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params)
+      def perform_request(name, params, headers = {})
+        result = JSON.parse (RestClient.post "#{self.api_basic_url}/#{name}", params, headers)
         if result["error"]
           raise Error.new(result["error"])
         end
         result
       end
+
+      def execute(args = {})
+        RestClient::Request.execute(args)
+      end
     end
-
   end
-
 end
